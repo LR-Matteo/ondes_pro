@@ -1,0 +1,50 @@
+[package]
+name = "ondes"
+version = "1.0.0"
+description = "Ondes — diagnostic du réseau domestique Freebox"
+authors = ["Ondes"]
+edition = "2021"
+default-run = "ondes"
+
+[lib]
+name = "ondes_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-autostart = "2"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync"] }
+hmac = "0.12"
+sha1 = "0.10"
+hex = "0.4"
+rusqlite = { version = "0.32", features = ["bundled"] }
+keyring = { version = "3", features = ["windows-native", "apple-native", "linux-native"] }
+anyhow = "1"
+chrono = "0.4"
+rand = "0.8"
+tiny_http = { version = "0.12", optional = true }
+
+[features]
+bridge = ["dep:tiny_http"]
+
+[[bin]]
+name = "ondes"
+path = "src/main.rs"
+
+[[bin]]
+name = "ondes-bridge"
+path = "src/bin/bridge.rs"
+required-features = ["bridge"]
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

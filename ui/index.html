@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ondes</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"/><g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M9.5 16.8a9.2 9.2 0 0 1 13 0M5.5 12.8a14.8 14.8 0 0 1 21 0"/></g><circle cx="16" cy="21.8" r="2.7" fill="#fff"/></svg>
+      <div><b>Ondes</b><small id="box-name">Diagnostic réseau</small></div>
+    </div>
+    <nav class="nav" id="nav">
+      <a href="#overview" data-v="overview"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3zM13 21h8V11h-8zM3 21h8v-6H3zM13 3v6h8V3z"/></svg>Vue d’ensemble</a>
+      <a href="#appareils" data-v="appareils"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H4zM2 19h20M9 15v4M15 15v4"/></svg>Appareils<b class="count" id="nav-dev"></b></a>
+      <a href="#conso" data-v="conso"><svg viewBox="0 0 24 24"><path d="M3 20h18M6 16V9M11 16V4M16 16v-5M21 16V7"/></svg>Consommation</a>
+      <a href="#wifi" data-v="wifi"><svg viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16.3a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1.2"/></svg>Wi-Fi</a>
+      <a href="#mesure" data-v="mesure"><svg viewBox="0 0 24 24"><path d="M12 14l4-5M3.5 18a9.5 9.5 0 1 1 17 0"/></svg>Mesure de débit</a>
+      <a href="#diagnostic" data-v="diagnostic"><svg viewBox="0 0 24 24"><path d="M12 3l9 4v5c0 5-4 8-9 9-5-1-9-4-9-9V7z M8.5 12l2.5 2.5 4.5-5"/></svg>Diagnostic<b class="count alert" id="nav-diag"></b></a>
+    </nav>
+    <div class="side-foot">
+      <a href="#reglages" data-v="reglages" class="navlink"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Réglages</a>
+      <div class="conn" id="conn"><i></i><span>Démarrage…</span></div>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <!-- VUE D'ENSEMBLE -->
+    <section class="view" data-view="overview">
+      <header class="vh"><div><h1>Vue d’ensemble</h1><p class="sub" id="ov-sub">—</p></div><span class="demo-pill" hidden>Mode démo</span></header>
+      <div class="grid-ov">
+        <div class="card live">
+          <div class="card-h"><h2>Débit de la ligne, en direct</h2><span class="muted small">15 dernières minutes</span></div>
+          <div class="bigrates">
+            <div><span class="lbl"><i class="dot dl"></i>Réception</span><b id="ov-down">—</b><small id="ov-down-pct"></small></div>
+            <div><span class="lbl"><i class="dot ul"></i>Envoi</span><b id="ov-up">—</b><small id="ov-up-pct"></small></div>
+            <div><span class="lbl">Capacité de la ligne</span><b id="ov-bw">—</b><small id="ov-media"></small></div>
+          </div>
+          <div class="chart" id="ov-chart"></div>
+        </div>
+        <div class="card health">
+          <div class="card-h"><h2>Santé du réseau</h2><a href="#diagnostic" class="more">Diagnostic complet</a></div>
+          <div class="health-top"><div class="ring" id="ov-ring"></div><div id="ov-verdict"></div></div>
+          <ul class="mini-findings" id="ov-findings"></ul>
+        </div>
+      </div>
+      <div class="kpis" id="ov-kpis"></div>
+      <div class="grid-2">
+        <div class="card"><div class="card-h"><h2>Qui consomme en ce moment</h2><a href="#appareils" class="more">Tous les appareils</a></div><div id="ov-now" class="rank"></div></div>
+        <div class="card"><div class="card-h"><h2>Depuis minuit</h2><a href="#conso" class="more">Historique</a></div><div id="ov-today" class="rank"></div></div>
+      </div>
+    </section>
+
+    <!-- APPAREILS -->
+    <section class="view" data-view="appareils" hidden>
+      <header class="vh"><div><h1>Appareils</h1><p class="sub" id="dev-sub">—</p></div></header>
+      <div class="toolbar">
+        <input type="search" id="dev-q" placeholder="Rechercher un appareil, une marque, une adresse…" aria-label="Rechercher">
+        <div class="seg" id="dev-filter">
+          <button data-f="all" class="on">Tous</button><button data-f="active">Actifs</button><button data-f="wifi">Wi-Fi</button><button data-f="ethernet">Ethernet</button><button data-f="weak">Signal faible</button><button data-f="new">Nouveaux</button>
+        </div>
+      </div>
+      <div class="card flush">
+        <table class="tbl" id="dev-table">
+          <thead><tr><th data-s="name">Appareil</th><th data-s="conn">Connexion</th><th data-s="signal" class="num">Signal</th><th data-s="phy_down" class="num">Débit radio</th><th data-s="down_mbps" class="num">↓ Maintenant</th><th data-s="up_mbps" class="num">↑ Maintenant</th><th data-s="today_down" class="num">Aujourd’hui</th><th data-s="last_activity">Activité</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty" id="dev-empty" hidden>Aucun appareil ne correspond.</p>
+      </div>
+    </section>
+
+    <!-- CONSOMMATION -->
+    <section class="view" data-view="conso" hidden>
+      <header class="vh"><div><h1>Consommation</h1><p class="sub" id="cs-sub">Ce qui passe par ta ligne, et qui en est responsable.</p></div>
+        <div class="seg" id="cs-range"><button data-r="3600">1 h</button><button data-r="86400" class="on">24 h</button><button data-r="604800">7 jours</button><button data-r="2592000">30 jours</button></div></header>
+      <div class="card">
+        <div class="card-h"><h2>Débit de la ligne</h2><span class="legend"><span><i class="dot dl"></i>Réception (moyenne)</span><span><i class="dot dlmax"></i>Pics</span><span><i class="dot ul"></i>Envoi</span></span></div>
+        <div class="chart tall" id="cs-chart"></div>
+        <p class="hint" id="cs-note"></p>
+      </div>
+      <div class="grid-2">
+        <div class="card"><div class="card-h"><h2>Qui a consommé</h2><span class="muted small" id="cs-total"></span></div><div id="cs-top" class="rank"></div></div>
+        <div class="card"><div class="card-h"><h2>Saturations</h2></div><div id="cs-sat"></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><div class="card-h"><h2>Quand la ligne est-elle chargée ?</h2><span class="muted small">moyenne sur 7 jours</span></div><div id="cs-heat" class="heat"></div></div>
+        <div class="card"><div class="card-h"><h2>Événements</h2></div><ul id="cs-events" class="events"></ul></div>
+      </div>
+    </section>
+
+    <!-- WI-FI -->
+    <section class="view" data-view="wifi" hidden>
+      <header class="vh"><div><h1>Wi-Fi</h1><p class="sub">Bornes de la box, occupation des canaux et réseaux voisins vus par la Freebox.</p></div><button class="btn" id="wf-scan">Relancer un scan des voisins</button></header>
+      <div class="aps" id="wf-aps"></div>
+      <div class="grid-2">
+        <div class="card"><div class="card-h"><h2>2,4 GHz — réseaux voisins</h2><span class="muted small" id="wf-n24"></span></div><div class="chart" id="wf-spectrum"></div><p class="reco" id="wf-reco24"></p></div>
+        <div class="card"><div class="card-h"><h2>5 GHz — blocs de canaux</h2><span class="muted small" id="wf-n5"></span></div><div id="wf-blocks" class="bars"></div><p class="reco" id="wf-reco5"></p></div>
+      </div>
+      <div class="card"><div class="card-h"><h2>Occupation mesurée par la box</h2><span class="muted small">part du temps où le canal est occupé</span></div><div id="wf-usage" class="usage"></div></div>
+      <div class="grid-2">
+        <div class="card"><div class="card-h"><h2>Ce PC</h2><span class="muted small">liaison Wi-Fi de cet ordinateur</span></div><div id="wf-local"></div></div>
+        <div class="card"><div class="card-h"><h2>Réseaux voisins</h2></div><div class="scroll"><table class="tbl compact" id="wf-table"><thead><tr><th>Réseau</th><th>Bande</th><th class="num">Canal</th><th class="num">Largeur</th><th class="num">Signal</th></tr></thead><tbody></tbody></table></div></div>
+      </div>
+    </section>
+
+    <!-- MESURE -->
+    <section class="view" data-view="mesure" hidden>
+      <header class="vh"><div><h1>Mesure de débit</h1><p class="sub">Ce que reçoit réellement ce PC, comparé à ce que la box voit passer au même moment.</p></div></header>
+      <div class="grid-ms">
+        <div class="card gauge-card">
+          <svg id="gauge" viewBox="0 0 300 236" role="img" aria-label="Compteur"></svg>
+          <div class="phase" id="ms-phase">Prêt</div>
+          <div class="prog"><i id="ms-prog"></i></div>
+          <button class="btn primary big" id="ms-go">Lancer la mesure</button>
+        </div>
+        <div class="card">
+          <label class="field">Pièce<input id="ms-room" list="ms-rooms" placeholder="Bureau, salon…"><datalist id="ms-rooms"></datalist></label>
+          <div class="field">Connexion de ce PC<div class="seg" id="ms-conn"><button data-c="eth">Ethernet</button><button data-c="wifi5" class="on">Wi-Fi 5 GHz</button><button data-c="wifi24">Wi-Fi 2,4 GHz</button><button data-c="wifi6">Wi-Fi 6 GHz</button></div></div>
+          <div class="tiles">
+            <div><span>Réception</span><b id="ms-down">—</b></div><div><span>Envoi</span><b id="ms-up">—</b></div>
+            <div><span>Latence</span><b id="ms-ping">—</b></div><div><span>Gigue</span><b id="ms-jit">—</b></div>
+            <div><span>Latence en charge</span><b id="ms-load">—</b></div><div><span>Vu par la box</span><b id="ms-box">—</b></div>
+          </div>
+          <p class="note" id="ms-msg" hidden></p>
+        </div>
+      </div>
+      <div class="card"><div class="card-h"><h2>Mesures précédentes</h2></div>
+        <table class="tbl compact" id="ms-table"><thead><tr><th>Date</th><th>Pièce</th><th>Connexion</th><th class="num">Réception</th><th class="num">Envoi</th><th class="num">Latence</th><th class="num">En charge</th><th class="num">Vu par la box</th><th></th></tr></thead><tbody></tbody></table>
+        <p class="empty" id="ms-empty">Aucune mesure pour l’instant.</p>
+      </div>
+    </section>
+
+    <!-- DIAGNOSTIC -->
+    <section class="view" data-view="diagnostic" hidden>
+      <header class="vh"><div><h1 id="dg-title">Diagnostic</h1><p class="sub" id="dg-sub"></p></div><button class="btn" id="dg-copy">Copier le rapport</button></header>
+      <div class="seg" id="dg-filter"><button data-a="all" class="on">Tout</button><button data-a="ligne">Ligne</button><button data-a="wifi">Wi-Fi</button><button data-a="appareils">Appareils</button><button data-a="box">Box</button></div>
+      <div id="dg-list" class="findings"></div>
+    </section>
+
+    <!-- RÉGLAGES -->
+    <section class="view" data-view="reglages" hidden>
+      <header class="vh"><div><h1>Réglages</h1><p class="sub" id="rg-sub"></p></div></header>
+      <div class="grid-2">
+        <div class="card"><h2>Connexion à la Freebox</h2><dl class="kv" id="rg-box"></dl>
+          <div class="field">Adresse de la box<input id="rg-base" spellcheck="false"></div>
+          <div class="actions"><button class="btn" id="rg-repair">Associer à nouveau</button><button class="btn danger" id="rg-unpair">Dissocier</button></div>
+          <p class="hint" id="rg-token"></p></div>
+        <div class="card"><h2>Collecte</h2>
+          <label class="row"><span>Fréquence de relevé<small>plus fréquent = courbes plus fines</small></span><select id="rg-interval"><option value="2">2 s</option><option value="5">5 s</option><option value="10">10 s</option><option value="30">30 s</option></select></label>
+          <label class="row"><span>Lancer Ondes au démarrage de Windows<small>la collecte continue, fenêtre fermée</small></span><input type="checkbox" class="switch" id="rg-auto"></label>
+          <label class="row"><span>Fermer la fenêtre réduit dans la zone de notification<small>sinon, fermer arrête la collecte</small></span><input type="checkbox" class="switch" id="rg-tray"></label>
+          <label class="row"><span>Conserver l’historique</span><select id="rg-ret"><option value="30">30 jours</option><option value="90">90 jours</option><option value="180">6 mois</option><option value="365">1 an</option></select></label>
+        </div>
+        <div class="card"><h2>Ton abonnement</h2><p class="hint">Sert à vérifier que la ligne délivre ce que tu paies.</p>
+          <div class="row2"><label class="field">Débit descendant (Mb/s)<input id="rg-sd" type="number" min="0" inputmode="numeric" placeholder="ex. 5000"></label><label class="field">Débit montant (Mb/s)<input id="rg-su" type="number" min="0" inputmode="numeric" placeholder="ex. 700"></label></div></div>
+        <div class="card"><h2>Données</h2><dl class="kv" id="rg-data"></dl>
+          <div class="actions"><button class="btn" id="rg-export">Exporter les données brutes</button><button class="btn" id="rg-demo">Mode démo</button></div>
+          <p class="hint" id="rg-exp-msg">L’export contient les réponses de la box : utile pour signaler un problème ou améliorer l’application.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Volet de détail d'un appareil -->
+  <aside class="drawer" id="drawer" hidden>
+    <button class="btn icon close" id="dr-close" aria-label="Fermer">×</button>
+    <div id="dr-body"></div>
+  </aside>
+</div>
+
+<!-- Association -->
+<div class="onboard" id="onboard" hidden>
+  <div class="ob-card">
+    <svg class="ob-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"/><g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M9.5 16.8a9.2 9.2 0 0 1 13 0M5.5 12.8a14.8 14.8 0 0 1 21 0"/></g><circle cx="16" cy="21.8" r="2.7" fill="#fff"/></svg>
+    <h1>Connecte Ondes à ta Freebox</h1>
+    <p class="sub">Ondes lit les informations de ta box (débit, appareils, Wi-Fi) grâce à l’accès officiel prévu par Free. Il ne modifie aucun réglage.</p>
+    <ol class="steps">
+      <li id="ob-s1"><b>Trouver la box</b><span id="ob-find">Recherche en cours…</span></li>
+      <li id="ob-s2"><b>Demander l’autorisation</b><span id="ob-ask">Une demande va s’afficher sur l’écran de ta Freebox.</span></li>
+      <li id="ob-s3"><b>Valider sur la box</b><span id="ob-wait">Avec les flèches de la box, réponds « Oui ».</span></li>
+    </ol>
+    <div class="ob-lcd" id="ob-lcd" hidden><div class="lcd"><small>Freebox Server</small><b>Autoriser « Ondes » ?</b><span>Non&nbsp;&nbsp;&nbsp;<u>Oui ›</u></span></div><p>Appuie sur la flèche <b>›</b> de la box pour accepter. La demande expire après quelques minutes.</p></div>
+    <p class="note" id="ob-msg" hidden></p>
+    <details class="ob-adv"><summary>Adresse de la box</summary><input id="ob-base" spellcheck="false" placeholder="http://mafreebox.freebox.fr"><p class="hint">Par défaut http://mafreebox.freebox.fr. Sinon, l’adresse IP de la box (souvent http://192.168.1.254).</p></details>
+    <div class="actions"><button class="btn primary big" id="ob-go" disabled>Demander l’autorisation</button><button class="btn ghost" id="ob-demo">Essayer avec une box de démonstration</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
